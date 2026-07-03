@@ -18,6 +18,12 @@ final servedOrdersProvider = StreamProvider<List<OrderDetail>>((ref) {
   return ref.watch(orderServiceProvider).watchOrdersByStatus(OrderStatus.served);
 });
 
+/// Paid orders — feeds the sales report so it updates the instant a payment
+/// goes through, without waiting for a manual filter change.
+final paidOrdersProvider = StreamProvider<List<OrderDetail>>((ref) {
+  return ref.watch(orderServiceProvider).watchOrdersByStatus(OrderStatus.paid);
+});
+
 class OrderController extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}

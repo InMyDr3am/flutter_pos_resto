@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/financial_summary.dart';
 import '../models/order_detail.dart';
+import 'order_provider.dart';
 import 'service_providers.dart';
 
 class SalesReportFilter {
@@ -43,14 +44,32 @@ class SalesReportFilterNotifier extends Notifier<SalesReportFilter> {
 final salesReportFilterProvider =
     NotifierProvider<SalesReportFilterNotifier, SalesReportFilter>(SalesReportFilterNotifier.new);
 
-final salesReportProvider = FutureProvider<List<OrderDetail>>((ref) {
+/// Filters the realtime `paidOrdersProvider` feed instead of running a
+/// one-off query, so a payment made anywhere shows up here the instant it
+/// happens — no manual re-filter needed.
+final salesReportProvider = Provider<AsyncValue<List<OrderDetail>>>((ref) {
   final filter = ref.watch(salesReportFilterProvider);
-  return ref.watch(orderServiceProvider).fetchSalesReport(
-        from: filter.from,
-        to: filter.to,
-        customerName: filter.customerName,
-        tableNumber: filter.tableNumber,
-      );
+  final ordersAsync = ref.watch(paidOrdersProvider);
+
+  return ordersAsync.whenData((orders) {
+    return orders.where((detail) {
+      final order = detail.order;
+      if (filter.from != null && order.orderDate.isBefore(filter.from!)) return false;
+      if (filter.to != null && order.orderDate.isAfter(filter.to!)) return false;
+      if (filter.customerName != null &&
+          filter.customerName!.trim().isNotEmpty &&
+          !order.customerName.toLowerCase().contains(filter.customerName!.trim().toLowerCase())) {
+        return false;
+      }
+      if (filter.tableNumber != null &&
+          filter.tableNumber!.trim().isNotEmpty &&
+          !order.tableNumber.toLowerCase().contains(filter.tableNumber!.trim().toLowerCase())) {
+        return false;
+      }
+      return true;
+    }).toList()
+      ..sort((a, b) => b.order.orderDate.compareTo(a.order.orderDate));
+  });
 });
 
 class FinancialPeriod {

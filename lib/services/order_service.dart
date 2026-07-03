@@ -89,29 +89,4 @@ class OrderService {
         .update({'status': OrderStatus.served, 'updated_at': DateTime.now().toIso8601String()})
         .eq('id', orderId);
   }
-
-  Future<List<OrderDetail>> fetchSalesReport({
-    DateTime? from,
-    DateTime? to,
-    String? customerName,
-    String? tableNumber,
-  }) async {
-    var query = _db.from(SupaTables.orders).select(_detailSelect).eq('status', OrderStatus.paid);
-
-    if (from != null) {
-      query = query.gte('order_date', from.toIso8601String().split('T').first);
-    }
-    if (to != null) {
-      query = query.lte('order_date', to.toIso8601String().split('T').first);
-    }
-    if (customerName != null && customerName.trim().isNotEmpty) {
-      query = query.ilike('customer_name', '%${customerName.trim()}%');
-    }
-    if (tableNumber != null && tableNumber.trim().isNotEmpty) {
-      query = query.ilike('table_number', '%${tableNumber.trim()}%');
-    }
-
-    final rows = await query.order('order_date', ascending: false);
-    return rows.map(OrderDetail.fromJson).toList();
-  }
 }

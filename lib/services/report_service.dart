@@ -33,30 +33,46 @@ class ReportService {
         .gte('expenses.expense_date', fromStr)
         .lte('expenses.expense_date', toStr);
 
-    final dailyTotals = <String, num>{};
+    final salesDaily = <String, num>{};
     num totalSales = 0;
     for (final row in salesRows) {
       final payments = (row['payments'] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
       final orderTotal = payments.fold<num>(0, (sum, p) => sum + (p['total_amount'] as num? ?? 0));
       totalSales += orderTotal;
       final date = row['order_date'] as String;
-      dailyTotals[date] = (dailyTotals[date] ?? 0) + orderTotal;
+      salesDaily[date] = (salesDaily[date] ?? 0) + orderTotal;
     }
 
-    final totalPurchases =
-        purchaseRows.fold<num>(0, (sum, r) => sum + (r['total_price'] as num? ?? 0));
-    final totalExpenses = expenseRows.fold<num>(0, (sum, r) => sum + (r['amount'] as num? ?? 0));
+    final purchaseDaily = <String, num>{};
+    num totalPurchases = 0;
+    for (final row in purchaseRows) {
+      final price = row['total_price'] as num? ?? 0;
+      totalPurchases += price;
+      final date = (row['ingredient_purchases'] as Map<String, dynamic>)['purchase_date'] as String;
+      purchaseDaily[date] = (purchaseDaily[date] ?? 0) + price;
+    }
 
-    final dailySales = dailyTotals.entries.map((e) {
-      return DailyTotal(date: DateTime.parse(e.key), amount: e.value);
-    }).toList()
-      ..sort((a, b) => a.date.compareTo(b.date));
+    final expenseDaily = <String, num>{};
+    num totalExpenses = 0;
+    for (final row in expenseRows) {
+      final amount = row['amount'] as num? ?? 0;
+      totalExpenses += amount;
+      final date = (row['expenses'] as Map<String, dynamic>)['expense_date'] as String;
+      expenseDaily[date] = (expenseDaily[date] ?? 0) + amount;
+    }
 
     return FinancialSummary(
       totalSales: totalSales,
       totalIngredientPurchases: totalPurchases,
       totalExpenses: totalExpenses,
-      dailySales: dailySales,
+      dailySales: _toSortedDailyTotals(salesDaily),
+      dailyPurchases: _toSortedDailyTotals(purchaseDaily),
+      dailyExpenses: _toSortedDailyTotals(expenseDaily),
     );
+  }
+
+  List<DailyTotal> _toSortedDailyTotals(Map<String, num> byDate) {
+    return byDate.entries.map((e) => DailyTotal(date: DateTime.parse(e.key), amount: e.value)).toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
   }
 }

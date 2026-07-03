@@ -49,7 +49,15 @@
       "Bash(ls -la \"/d/Logo Yansfood\" 2>&1)",
       "Bash(mkdir -p \"/c/Flutter/flutter_resto_pos/assets/branding\" && cp \"/d/Logo Yansfood/fav_icon.png\" \"/c/Flutter/flutter_resto_pos/assets/branding/fav_icon.png\" && ls -la \"/c/Flutter/flutter_resto_pos/assets/branding/\")",
       "Bash(dart run *)",
-      "Bash(xargs ls -la)"
+      "Bash(xargs ls -la)",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM devices)",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM shell ls -la //sdcard/Pictures/)",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM shell content query --uri content://media/external/images/media --projection _display_name:_data --where '_display_name LIKE '\\\\''%Nasi%'\\\\''')",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM shell 'content query --uri content://media/external/images/media --projection _display_name:_data')",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM shell content call --uri content://media/external/file --method scan_volume --arg external)",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM shell 'content query --uri content://media/external/images/media --projection _display_name:date_modified')",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM shell 'ls -la --time-style=full-iso '\\\\''/sdcard/Pictures/'\\\\''')",
+      "Bash(/c/Users/fauzi/AppData/Local/Android/Sdk/platform-tools/adb.exe -s RR8M8085LAM shell 'ls -la '\\\\''/sdcard/Pictures/'\\\\''')"
     ]
   }
 }
