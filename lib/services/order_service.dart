@@ -61,22 +61,26 @@ class OrderService {
 
   /// Realtime feed of orders in [status], with items eagerly loaded so the
   /// kitchen / cashier screens can render without an extra round trip.
+  ///
+  /// Deliberately does *not* filter the underlying `.stream()` by status:
+  /// Supabase Realtime only broadcasts an UPDATE to subscribers whose filter
+  /// matches the row's *new* value, so a row leaving the filter (e.g.
+  /// `served` -> `paid`) would never notify a `status=eq.served` subscriber,
+  /// leaving stale rows on screen. Instead we stream every order and filter
+  /// client-side so every transition is observed.
   Stream<List<OrderDetail>> watchOrdersByStatus(String status) {
-    return _db
-        .from(SupaTables.orders)
-        .stream(primaryKey: ['id'])
-        .eq('status', status)
-        .order('created_at')
-        .asyncMap((rows) async {
-      if (rows.isEmpty) return <OrderDetail>[];
-      final ids = rows.map((r) => r['id'] as String).toList();
-      final detailed = await _db
-          .from(SupaTables.orders)
-          .select(_detailSelect)
-          .inFilter('id', ids)
-          .order('created_at');
-      return detailed.map(OrderDetail.fromJson).toList();
-    });
+    return _db.from(SupaTables.orders).stream(primaryKey: ['id']).order('created_at').asyncMap(
+      (rows) async {
+        final ids = rows.where((r) => r['status'] == status).map((r) => r['id'] as String).toList();
+        if (ids.isEmpty) return <OrderDetail>[];
+        final detailed = await _db
+            .from(SupaTables.orders)
+            .select(_detailSelect)
+            .inFilter('id', ids)
+            .order('created_at');
+        return detailed.map(OrderDetail.fromJson).toList();
+      },
+    );
   }
 
   Future<void> markServed(String orderId) async {

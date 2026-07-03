@@ -378,7 +378,15 @@ create policy "payments_delete_owner"
   using (public.current_role() = 'owner');
 
 -- ============================================================================
--- 5. STORAGE (menu photos)
+-- 5. REALTIME
+-- ============================================================================
+-- The kitchen and cashier/payment screens subscribe to live changes on
+-- `orders` (via Supabase Realtime "Postgres Changes"). Without this, the app
+-- throws `RealtimeSubscribeException: Unable to subscribe to changes...`.
+alter publication supabase_realtime add table orders;
+
+-- ============================================================================
+-- 6. STORAGE (menu photos)
 -- ============================================================================
 
 insert into storage.buckets (id, name, public)
@@ -403,7 +411,7 @@ create policy "menu_photos_owner_delete"
   using (bucket_id = 'menu-photos' and public.current_role() = 'owner');
 
 -- ============================================================================
--- 6. BOOTSTRAPPING THE FIRST OWNER ACCOUNT
+-- 7. BOOTSTRAPPING THE FIRST OWNER ACCOUNT
 -- ============================================================================
 -- 1. Create the user via Supabase Studio -> Authentication -> Add user
 --    (or have them sign up through the app), e.g. owner@yourrestaurant.com.
