@@ -53,6 +53,7 @@ class OrderStatus {
   static const onProcess = 'on_process';
   static const served = 'served';
   static const paid = 'paid';
+  static const cancelled = 'cancelled';
 }
 
 /// Mirrors the `payment_method` check constraint on the `payments` table.

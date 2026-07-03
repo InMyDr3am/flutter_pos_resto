@@ -35,9 +35,12 @@ class _MenuListScreenState extends ConsumerState<MenuListScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Kelola Menu')),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const MenuFormScreen()),
-        ),
+        onPressed: () {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const MenuFormScreen()),
+          );
+        },
         icon: const Icon(Icons.add),
         label: const Text('Menu Baru'),
       ),
@@ -121,9 +124,12 @@ class _MenuItemCard extends ConsumerWidget {
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => MenuFormScreen(existing: item)),
-        ),
+        onTap: () {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => MenuFormScreen(existing: item)),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(

@@ -45,9 +45,12 @@ class ExpenseListScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const ExpenseFormScreen()),
-        ),
+        onPressed: () {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ExpenseFormScreen()),
+          );
+        },
         icon: const Icon(Icons.add),
         label: const Text('Pengeluaran Baru'),
       ),

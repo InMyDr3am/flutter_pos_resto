@@ -30,8 +30,14 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
   @override
   void initState() {
     super.initState();
-    // Start each purchase form from a clean slate.
-    Future.microtask(() => ref.read(purchaseDraftProvider.notifier).clear());
+    // Start each purchase form from a clean slate. Deferred to a post-frame
+    // callback so this mutation happens strictly after the current build
+    // pass finishes (see edit_order_screen.dart for why Future.microtask
+    // alone isn't reliably late enough).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(purchaseDraftProvider.notifier).clear();
+    });
   }
 
   @override

@@ -6,10 +6,11 @@ import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../screens/payment/served_orders_tab.dart';
 import '../../screens/reports/sales_report_screen.dart';
+import 'active_orders_tab.dart';
 import 'new_order_tab.dart';
 import 'order_checkout_sheet.dart';
 
-const _titles = ['Buat Pesanan', 'Pembayaran', 'Laporan Penjualan'];
+const _titles = ['Buat Pesanan', 'Pesanan Aktif', 'Pembayaran', 'Laporan Penjualan'];
 
 class KasirHomeScreen extends ConsumerStatefulWidget {
   const KasirHomeScreen({super.key});
@@ -40,6 +41,7 @@ class _KasirHomeScreenState extends ConsumerState<KasirHomeScreen> {
         index: _index,
         children: const [
           NewOrderTab(),
+          ActiveOrdersTab(),
           ServedOrdersTab(),
           SalesReportScreen(embedded: true),
         ],
@@ -82,6 +84,7 @@ class _KasirHomeScreenState extends ConsumerState<KasirHomeScreen> {
               onDestinationSelected: (value) => setState(() => _index = value),
               destinations: const [
                 NavigationDestination(icon: Icon(Icons.add_shopping_cart_outlined), label: 'Pesanan'),
+                NavigationDestination(icon: Icon(Icons.pending_actions_outlined), label: 'Aktif'),
                 NavigationDestination(icon: Icon(Icons.payments_outlined), label: 'Bayar'),
                 NavigationDestination(icon: Icon(Icons.receipt_long_outlined), label: 'Laporan'),
               ],

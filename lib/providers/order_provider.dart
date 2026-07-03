@@ -6,6 +6,7 @@ import '../core/constants/app_constants.dart';
 import '../models/order_detail.dart';
 import '../services/order_service.dart' show OrderDraftItem;
 import 'cart_provider.dart';
+import 'edit_order_draft_provider.dart';
 import 'service_providers.dart';
 
 /// Orders currently being prepared — feeds the kitchen screen.
@@ -60,6 +61,40 @@ class OrderController extends AsyncNotifier<void> {
   Future<void> markServed(String orderId) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => ref.read(orderServiceProvider).markServed(orderId));
+  }
+
+  Future<void> cancelOrder(String orderId) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => ref.read(orderServiceProvider).cancelOrder(orderId));
+  }
+
+  Future<bool> submitOrderEdit(String orderId) async {
+    final draft = ref.read(editOrderDraftProvider);
+    if (!draft.isValid) return false;
+
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(orderServiceProvider).updateOrder(
+            orderId: orderId,
+            tableNumber: draft.tableNumber,
+            customerName: draft.customerName,
+            orderDate: draft.orderDate,
+            items: draft.lines
+                .map((l) => OrderDraftItem(
+                      menuItemId: l.menuItem.id,
+                      quantity: l.quantity,
+                      priceAtOrder: l.menuItem.price,
+                      note: l.note,
+                    ))
+                .toList(),
+          );
+    });
+
+    if (!state.hasError) {
+      ref.read(editOrderDraftProvider.notifier).clear();
+      return true;
+    }
+    return false;
   }
 }
 

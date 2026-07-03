@@ -14,6 +14,7 @@ class StatusBadge extends StatelessWidget {
       OrderStatus.onProcess => (const Color(0xFFB25E00), 'Diproses'),
       OrderStatus.served => (const Color(0xFF1D5FBF), 'Dihidangkan'),
       OrderStatus.paid => (const Color(0xFF1E7A5F), 'Lunas'),
+      OrderStatus.cancelled => (const Color(0xFFC62828), 'Dibatalkan'),
       _ => (Colors.grey, status),
     };
 

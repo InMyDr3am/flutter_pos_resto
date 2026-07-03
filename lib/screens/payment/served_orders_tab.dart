@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/async_value_widget.dart';
+import '../../core/widgets/confirm_dialog.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../models/order_detail.dart';
 import '../../providers/order_provider.dart';
@@ -37,19 +38,22 @@ class ServedOrdersTab extends ConsumerWidget {
   }
 }
 
-class _ServedOrderCard extends StatelessWidget {
+class _ServedOrderCard extends ConsumerWidget {
   const _ServedOrderCard({required this.order});
 
   final OrderDetail order;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => PaymentScreen(order: order)),
-        ),
+        onTap: () {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => PaymentScreen(order: order)),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -71,7 +75,22 @@ class _ServedOrderCard extends StatelessWidget {
                 AppFormat.rupiah(order.totalAmount),
                 style: const TextStyle(fontWeight: FontWeight.w800),
               ),
-              const Icon(Icons.chevron_right_rounded),
+              IconButton(
+                icon: Icon(Icons.cancel_outlined, color: Theme.of(context).colorScheme.error),
+                tooltip: 'Batalkan pesanan',
+                onPressed: () async {
+                  final confirmed = await showConfirmDialog(
+                    context,
+                    title: 'Batalkan pesanan?',
+                    message:
+                        'Pesanan "${order.order.customerName}" Meja ${order.order.tableNumber} akan dibatalkan.',
+                    confirmLabel: 'Batalkan',
+                  );
+                  if (confirmed) {
+                    await ref.read(orderControllerProvider.notifier).cancelOrder(order.order.id);
+                  }
+                },
+              ),
             ],
           ),
         ),

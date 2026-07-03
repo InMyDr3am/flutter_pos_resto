@@ -42,6 +42,13 @@ final menuItemsProvider = FutureProvider<List<MenuItem>>((ref) {
       );
 });
 
+/// Unfiltered menu list independent of [menuFilterProvider], so screens that
+/// need their own local search (e.g. the order-edit screen) don't fight over
+/// shared filter state with the menu list / new-order tab.
+final allMenuItemsProvider = FutureProvider<List<MenuItem>>((ref) {
+  return ref.watch(menuServiceProvider).fetchMenuItems();
+});
+
 class MenuController extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}

@@ -27,7 +27,13 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(expenseDraftProvider.notifier).clear());
+    // Deferred to a post-frame callback so this mutation happens strictly
+    // after the current build pass finishes (see edit_order_screen.dart for
+    // why Future.microtask alone isn't reliably late enough).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(expenseDraftProvider.notifier).clear();
+    });
   }
 
   @override

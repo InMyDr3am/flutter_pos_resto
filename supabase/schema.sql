@@ -86,7 +86,7 @@ create table if not exists orders (
   customer_name text not null,
   order_date date not null default current_date,
   status text not null default 'on_process'
-    check (status in ('on_process', 'served', 'paid')),
+    check (status in ('on_process', 'served', 'paid', 'cancelled')),
   created_by uuid references profiles(id) on delete set null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -333,6 +333,18 @@ create policy "orders_update_kasir_pay"
   using (public.current_role() = 'kasir' and status = 'served')
   with check (status = 'paid');
 
+-- Kasir can edit table/customer/date on an order they haven't served yet.
+create policy "orders_update_kasir_edit"
+  on orders for update to authenticated
+  using (public.current_role() = 'kasir' and status = 'on_process')
+  with check (status = 'on_process');
+
+-- Kasir can cancel an order any time before it's paid.
+create policy "orders_update_kasir_cancel"
+  on orders for update to authenticated
+  using (public.current_role() = 'kasir' and status in ('on_process', 'served'))
+  with check (status = 'cancelled');
+
 -- Owner has unrestricted access, matching "akses penuh".
 create policy "orders_all_owner"
   on orders for all to authenticated
@@ -354,9 +366,20 @@ create policy "order_items_write_owner"
   using (public.current_role() = 'owner')
   with check (public.current_role() = 'owner');
 
-create policy "order_items_delete_owner"
+-- Editing an order's items is delete-all-then-reinsert, so kasir needs
+-- delete rights on order_items while the parent order is still on_process.
+create policy "order_items_delete_kasir_or_owner"
   on order_items for delete to authenticated
-  using (public.current_role() = 'owner');
+  using (
+    public.current_role() = 'owner'
+    or (
+      public.current_role() = 'kasir'
+      and exists (
+        select 1 from public.orders o
+        where o.id = order_items.order_id and o.status = 'on_process'
+      )
+    )
+  );
 
 -- ---- payments ---------------------------------------------------------------
 

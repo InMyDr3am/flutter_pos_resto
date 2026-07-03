@@ -89,4 +89,37 @@ class OrderService {
         .update({'status': OrderStatus.served, 'updated_at': DateTime.now().toIso8601String()})
         .eq('id', orderId);
   }
+
+  Future<void> cancelOrder(String orderId) async {
+    await _db
+        .from(SupaTables.orders)
+        .update({'status': OrderStatus.cancelled, 'updated_at': DateTime.now().toIso8601String()})
+        .eq('id', orderId);
+  }
+
+  /// Replaces an order's details and its full set of items in one go — used
+  /// by the "edit order" flow while it's still `on_process`.
+  Future<OrderDetail> updateOrder({
+    required String orderId,
+    required String tableNumber,
+    required String customerName,
+    required DateTime orderDate,
+    required List<OrderDraftItem> items,
+  }) async {
+    await _db.from(SupaTables.orders).update({
+      'table_number': tableNumber,
+      'customer_name': customerName,
+      'order_date': orderDate.toIso8601String().split('T').first,
+      'updated_at': DateTime.now().toIso8601String(),
+    }).eq('id', orderId);
+
+    await _db.from(SupaTables.orderItems).delete().eq('order_id', orderId);
+    if (items.isNotEmpty) {
+      await _db.from(SupaTables.orderItems).insert(items.map((e) => e.toJson(orderId)).toList());
+    }
+
+    final full =
+        await _db.from(SupaTables.orders).select(_detailSelect).eq('id', orderId).single();
+    return OrderDetail.fromJson(full);
+  }
 }

@@ -45,9 +45,12 @@ class PurchaseListScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const PurchaseFormScreen()),
-        ),
+        onPressed: () {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const PurchaseFormScreen()),
+          );
+        },
         icon: const Icon(Icons.add),
         label: const Text('Catat Belanja'),
       ),
