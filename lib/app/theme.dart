@@ -95,7 +95,16 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: colorScheme.surfaceContainerHigh,
         selectedColor: colorScheme.primaryContainer,
-        labelStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 13),
+        labelStyle: GoogleFonts.plusJakartaSans(
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+          color: Colors.black,
+        ),
+        secondaryLabelStyle: GoogleFonts.plusJakartaSans(
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+          color: Colors.black,
+        ),
         shape: StadiumBorder(side: BorderSide(color: colorScheme.outlineVariant)),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       ),

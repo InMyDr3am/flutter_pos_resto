@@ -71,7 +71,18 @@
       "Read(//c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_riverpod-3.3.2/lib/src/**)",
       "Read(//c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_riverpod-3.3.2/**)",
       "Bash(xargs grep -ln \"_debugCanModifyProviders\")",
-      "Bash(grep -n \"_debugCanModifyProviders\" -B 5 -A 40 \"/c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_riverpod-3.3.2/lib/src/core/provider_scope.dart\")"
+      "Bash(grep -n \"_debugCanModifyProviders\" -B 5 -A 40 \"/c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_riverpod-3.3.2/lib/src/core/provider_scope.dart\")",
+      "WebFetch(domain:www.pexels.com)",
+      "WebFetch(domain:images.pexels.com)",
+      "Bash(python -m http.server 8532)",
+      "mcp__claude-in-chrome__navigate",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "Bash(find \"C:\\\\Users\\\\fauzi\\\\AppData\\\\Local\\\\Temp\\\\claude\" -newermt \"-10 minutes\" -iname \"*.png\" -o -newermt \"-10 minutes\" -iname \"*.jpg\" 2>/dev/null | head -20)",
+      "Read(//c/Users/fauzi/Downloads/**)",
+      "Read(//c/Users/fauzi/**)",
+      "Read(//c/Users/fauzi/AppData/Local/Temp/**)",
+      "Read(//c//**)",
+      "Read(//c/Users/fauzi/AppData/Roaming/**)"
     ]
   }
 }

@@ -149,41 +149,56 @@ class _DashboardGrid extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          childAspectRatio: 1.15,
+          childAspectRatio: 1.5,
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             final item = items[index];
             return Card(
+              clipBehavior: Clip.antiAlias,
+              color: item.color.withValues(alpha: 0.10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+                side: BorderSide(color: item.color.withValues(alpha: 0.22)),
+              ),
               child: InkWell(
-                borderRadius: BorderRadius.circular(16),
                 onTap: () => context.push(item.route),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: item.color.withValues(alpha: 0.14),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(item.icon, color: item.color, size: 24),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      right: -14,
+                      bottom: -14,
+                      child: Icon(item.icon, size: 88, color: item.color.withValues(alpha: 0.16)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: item.color,
+                              borderRadius: BorderRadius.circular(11),
+                            ),
+                            child: Icon(item.icon, color: Colors.white, size: 22),
+                          ),
+                          Text(
+                            item.label,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        item.label,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
