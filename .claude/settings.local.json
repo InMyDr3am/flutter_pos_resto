@@ -82,7 +82,9 @@
       "Read(//c/Users/fauzi/**)",
       "Read(//c/Users/fauzi/AppData/Local/Temp/**)",
       "Read(//c//**)",
-      "Read(//c/Users/fauzi/AppData/Roaming/**)"
+      "Read(//c/Users/fauzi/AppData/Roaming/**)",
+      "Bash(flutter config *)",
+      "Bash(mkdir -p \"/c/Flutter/flutter_resto_pos/.claude\")"
     ]
   }
 }

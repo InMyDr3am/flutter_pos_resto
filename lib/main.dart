@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'app/router.dart';
@@ -8,6 +9,9 @@ import 'services/supabase_client.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // No-op outside the web; on web this drops the "#" from URLs so routes
+  // like /owner/menu are shareable, bookmarkable, real paths.
+  usePathUrlStrategy();
   await initializeDateFormatting('id_ID');
   await AppSupabase.initialize();
   runApp(const ProviderScope(child: RestoPosApp()));
