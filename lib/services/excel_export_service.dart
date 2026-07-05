@@ -319,7 +319,10 @@ class ExcelExportService {
 
   Future<void> _share(Excel excel, String baseFileName) async {
     excel.delete('Sheet1');
-    final bytes = excel.save();
+    // `encode()` returns the same bytes as `save()` without save()'s web-only
+    // side effect of auto-downloading the file under its default name — we
+    // already share the bytes below under our own file name.
+    final bytes = excel.encode();
     if (bytes == null) throw StateError('Gagal membuat file Excel.');
 
     final fileName =
