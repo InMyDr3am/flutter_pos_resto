@@ -161,13 +161,13 @@ class _SalesReportScreenState extends ConsumerState<SalesReportScreen> {
   }
 }
 
-class _SalesCard extends StatelessWidget {
+class _SalesCard extends ConsumerWidget {
   const _SalesCard({required this.order});
 
   final OrderDetail order;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ExpansionTile(
         title: Text(
@@ -234,6 +234,15 @@ class _SalesCard extends StatelessWidget {
                     ),
                   ],
                 ],
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: () => ref.read(pdfReportServiceProvider).printReceipt(order),
+                    icon: const Icon(Icons.print_outlined, size: 18),
+                    label: const Text('Cetak Struk'),
+                  ),
+                ),
               ],
             ),
           ),

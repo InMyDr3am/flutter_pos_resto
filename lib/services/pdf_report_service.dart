@@ -7,6 +7,7 @@ import '../models/expense_detail.dart';
 import '../models/financial_summary.dart';
 import '../models/ingredient.dart';
 import '../models/order_detail.dart';
+import '../models/purchase_detail.dart';
 
 /// Builds printable PDF reports (and per-order receipts) and hands them to
 /// the platform's print/share dialog via `printing` — works the same way on
@@ -113,6 +114,32 @@ class PdfReportService {
                     order.payment?.paymentMethod.toUpperCase() ?? '-',
                   ])
               .toList(),
+        ),
+      ],
+    );
+  }
+
+  Future<void> printPurchases(List<PurchaseDetail> purchases) {
+    final rows = <List<String>>[];
+    for (final purchase in purchases) {
+      for (final item in purchase.items) {
+        rows.add([
+          AppFormat.dateShort(purchase.batch.purchaseDate),
+          item.ingredientName ?? '-',
+          '${item.quantity} ${item.ingredientUnit ?? ''}',
+          AppFormat.rupiah(item.unitPrice),
+          AppFormat.rupiah(item.totalPrice),
+        ]);
+      }
+    }
+
+    return _printDocument(
+      title: 'Laporan Belanja Bahan Baku',
+      subtitle: 'Dicetak ${AppFormat.dateLong(DateTime.now())}',
+      buildContent: (context) => [
+        pw.TableHelper.fromTextArray(
+          headers: ['Tanggal', 'Bahan Baku', 'Jumlah', 'Harga Satuan', 'Subtotal'],
+          data: rows,
         ),
       ],
     );

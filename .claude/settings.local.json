@@ -92,7 +92,8 @@
       "Bash(adb devices *)",
       "Bash(adb shell *)",
       "Bash(FLUTTER_ROOT=/c/Users/fauzi/flutter; grep -rln \"getPlatformNameForAndroidArch\\\\|androidArchs\\\\|deviceAbis\\\\|getAndroidArchForName\" \"$FLUTTER_ROOT/packages/flutter_tools/lib/src/android/\" 2>/dev/null)",
-      "Bash(FLUTTER_ROOT=/c/Users/fauzi/flutter; grep -rln \"targetArchs\" \"$FLUTTER_ROOT/packages/flutter_tools/lib/src/\" 2>/dev/null)"
+      "Bash(FLUTTER_ROOT=/c/Users/fauzi/flutter; grep -rln \"targetArchs\" \"$FLUTTER_ROOT/packages/flutter_tools/lib/src/\" 2>/dev/null)",
+      "Bash(grep -n \"^  excel:\" pubspec.lock -A3; echo \"---\"; find / -maxdepth 8 -type d -path \"*hosted/pub.dev/excel-*\" 2>/dev/null)"
     ]
   }
 }

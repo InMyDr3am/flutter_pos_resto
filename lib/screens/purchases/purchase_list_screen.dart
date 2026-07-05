@@ -5,8 +5,10 @@ import '../../core/utils/formatters.dart';
 import '../../core/widgets/async_value_widget.dart';
 import '../../core/widgets/confirm_dialog.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/widgets/export_print_actions.dart';
 import '../../models/purchase_detail.dart';
 import '../../providers/purchase_provider.dart';
+import '../../providers/service_providers.dart';
 import 'purchase_form_screen.dart';
 
 class PurchaseListScreen extends ConsumerWidget {
@@ -42,6 +44,12 @@ class PurchaseListScreen extends ConsumerWidget {
               icon: const Icon(Icons.filter_alt_off_outlined),
               onPressed: () => ref.read(purchaseDateFilterProvider.notifier).clear(),
             ),
+          ExportPrintActions(
+            onExport: () =>
+                ref.read(excelExportServiceProvider).exportPurchases(purchasesAsync.value ?? []),
+            onPrint: () =>
+                ref.read(pdfReportServiceProvider).printPurchases(purchasesAsync.value ?? []),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
