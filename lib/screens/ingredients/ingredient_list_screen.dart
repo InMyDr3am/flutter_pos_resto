@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/widgets/async_value_widget.dart';
 import '../../core/widgets/confirm_dialog.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/widgets/export_print_actions.dart';
 import '../../models/ingredient.dart';
 import '../../providers/ingredient_provider.dart';
+import '../../providers/service_providers.dart';
 import 'ingredient_form_sheet.dart';
 
 class IngredientListScreen extends ConsumerStatefulWidget {
@@ -29,7 +31,18 @@ class _IngredientListScreenState extends ConsumerState<IngredientListScreen> {
     final ingredientsAsync = ref.watch(ingredientsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Bahan Baku')),
+      appBar: AppBar(
+        title: const Text('Bahan Baku'),
+        actions: [
+          ExportPrintActions(
+            onExport: () => ref
+                .read(excelExportServiceProvider)
+                .exportIngredients(ingredientsAsync.value ?? []),
+            onPrint: () =>
+                ref.read(pdfReportServiceProvider).printIngredients(ingredientsAsync.value ?? []),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showModalBottomSheet(
           context: context,

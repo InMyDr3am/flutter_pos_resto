@@ -6,6 +6,7 @@ import '../../core/utils/formatters.dart';
 import '../../models/order_detail.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/payment_provider.dart';
+import '../../providers/service_providers.dart';
 
 class PaymentScreen extends ConsumerStatefulWidget {
   const PaymentScreen({super.key, required this.order});
@@ -45,7 +46,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     final processedBy = ref.read(currentProfileProvider).value?.id;
     if (processedBy == null) return;
 
-    final ok = await ref.read(paymentControllerProvider.notifier).pay(
+    final payment = await ref.read(paymentControllerProvider.notifier).pay(
           orderId: widget.order.order.id,
           method: _method,
           totalAmount: widget.order.totalAmount,
@@ -53,11 +54,35 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           processedBy: processedBy,
         );
     if (!mounted) return;
-    if (ok) {
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pembayaran berhasil.')),
+    if (payment != null) {
+      final paidOrder = OrderDetail(
+        order: widget.order.order,
+        items: widget.order.items,
+        payment: payment,
       );
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Pembayaran berhasil'),
+          content: const Text('Cetak struk untuk transaksi ini?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Nanti'),
+            ),
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                ref.read(pdfReportServiceProvider).printReceipt(paidOrder);
+              },
+              icon: const Icon(Icons.print_outlined),
+              label: const Text('Cetak Struk'),
+            ),
+          ],
+        ),
+      );
+      if (!mounted) return;
+      Navigator.of(context).pop();
     } else {
       final error = ref.read(paymentControllerProvider).error;
       ScaffoldMessenger.of(context).showSnackBar(

@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/async_value_widget.dart';
+import '../../core/widgets/export_print_actions.dart';
 import '../../models/financial_summary.dart';
 import '../../providers/report_provider.dart';
+import '../../providers/service_providers.dart';
 
 enum _Metric { sales, purchases, expenses }
 
@@ -38,8 +40,23 @@ class _FinancialReportScreenState extends ConsumerState<FinancialReportScreen> {
     final summaryAsync = ref.watch(financialSummaryProvider);
     final period = ref.watch(financialPeriodProvider);
 
+    final summary = summaryAsync.value;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Laporan Keuangan')),
+      appBar: AppBar(
+        title: const Text('Laporan Keuangan'),
+        actions: [
+          if (summary != null)
+            ExportPrintActions(
+              onExport: () => ref
+                  .read(excelExportServiceProvider)
+                  .exportFinancialSummary(summary, period.from, period.to),
+              onPrint: () => ref
+                  .read(pdfReportServiceProvider)
+                  .printFinancialSummary(summary, period.from, period.to),
+            ),
+        ],
+      ),
       body: AsyncValueWidget(
         value: summaryAsync,
         data: (summary) {

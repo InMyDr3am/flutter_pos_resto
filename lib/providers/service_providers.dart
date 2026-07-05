@@ -2,11 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../services/auth_service.dart';
 import '../services/employee_service.dart';
+import '../services/excel_export_service.dart';
 import '../services/expense_service.dart';
 import '../services/ingredient_service.dart';
 import '../services/menu_service.dart';
 import '../services/order_service.dart';
 import '../services/payment_service.dart';
+import '../services/pdf_report_service.dart';
 import '../services/purchase_service.dart';
 import '../services/report_service.dart';
 
@@ -21,3 +23,5 @@ final orderServiceProvider = Provider<OrderService>((ref) => OrderService());
 final paymentServiceProvider = Provider<PaymentService>((ref) => PaymentService());
 final reportServiceProvider = Provider<ReportService>((ref) => ReportService());
 final employeeServiceProvider = Provider<EmployeeService>((ref) => EmployeeService());
+final excelExportServiceProvider = Provider<ExcelExportService>((ref) => ExcelExportService());
+final pdfReportServiceProvider = Provider<PdfReportService>((ref) => PdfReportService());

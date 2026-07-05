@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/async_value_widget.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/widgets/export_print_actions.dart';
 import '../../core/widgets/status_badge.dart';
 import '../../models/order_detail.dart';
 import '../../providers/report_provider.dart';
+import '../../providers/service_providers.dart';
 
 /// List of `paid` transactions, filterable by date/customer/table.
 ///
@@ -143,7 +145,17 @@ class _SalesReportScreenState extends ConsumerState<SalesReportScreen> {
     if (widget.embedded) return body;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Laporan Penjualan')),
+      appBar: AppBar(
+        title: const Text('Laporan Penjualan'),
+        actions: [
+          ExportPrintActions(
+            onExport: () =>
+                ref.read(excelExportServiceProvider).exportSalesReport(reportAsync.value ?? []),
+            onPrint: () =>
+                ref.read(pdfReportServiceProvider).printSalesReport(reportAsync.value ?? []),
+          ),
+        ],
+      ),
       body: body,
     );
   }

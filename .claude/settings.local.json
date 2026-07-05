@@ -84,7 +84,15 @@
       "Read(//c//**)",
       "Read(//c/Users/fauzi/AppData/Roaming/**)",
       "Bash(flutter config *)",
-      "Bash(mkdir -p \"/c/Flutter/flutter_resto_pos/.claude\")"
+      "Bash(mkdir -p \"/c/Flutter/flutter_resto_pos/.claude\")",
+      "Bash(RC=\"/c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/excel-4.0.6\"; find \"$RC\" -iname \"*.md\" | head -5; echo \"---\"; sed -n '1,120p' \"$RC/README.md\" 2>/dev/null)",
+      "Bash(RC=\"/c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/share_plus-13.2.0\"; cat \"$RC/README.md\" 2>/dev/null | sed -n '1,150p')",
+      "Bash(RC=\"/c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/printing-5.14.3\"; cat \"$RC/README.md\" 2>/dev/null | sed -n '1,90p')",
+      "Bash(RC=\"/c/Users/fauzi/AppData/Local/Pub/Cache/hosted/pub.dev/pdf-3.12.0/lib/src/widgets\"; grep -rn \"static Table fromTextArray\" \"$RC\" )",
+      "Bash(adb devices *)",
+      "Bash(adb shell *)",
+      "Bash(FLUTTER_ROOT=/c/Users/fauzi/flutter; grep -rln \"getPlatformNameForAndroidArch\\\\|androidArchs\\\\|deviceAbis\\\\|getAndroidArchForName\" \"$FLUTTER_ROOT/packages/flutter_tools/lib/src/android/\" 2>/dev/null)",
+      "Bash(FLUTTER_ROOT=/c/Users/fauzi/flutter; grep -rln \"targetArchs\" \"$FLUTTER_ROOT/packages/flutter_tools/lib/src/\" 2>/dev/null)"
     ]
   }
 }
